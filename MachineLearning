@@ -1,0 +1,7 @@
+install.packages("MASS")
+library(MASS)
+
+data("biopsy")
+head(biopsy)
+
+str(biopsy)

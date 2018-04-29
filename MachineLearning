@@ -5,3 +5,5 @@ data("biopsy")
 head(biopsy)
 
 str(biopsy)
+names(biopsy) = c("thick", "u.size", "u.shape", "adhsn", "s.size", "nucl", "chrom", "n.nuc", "mit", "class")
+names(biopsy)

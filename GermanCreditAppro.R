@@ -49,3 +49,5 @@ german_radial_tune <- tune(svm,risk ~ ., data = german_train,
 german_radial_tune$best.parameters
    cost gamma
 9   10  0.05
+
+# The project in process

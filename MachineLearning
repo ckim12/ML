@@ -1,16 +1,6 @@
 install.packages("MASS")
 library(MASS)
 
-Attaching package: 'MASS'
-
-The following object is masked _by_ '.GlobalEnv':
-  
-  housing
-
-Warning messages:
-  1: In .recacheSubclasses(def@className, def, doSubclasses, env) :
-  undefined subclass "externalRefMethod" of class "kfunction"; definition not updated
-2: package 'MASS' was built under R version 3.2.2 
 data("biopsy")
 head(biopsy)
 ID V1 V2 V3 V4 V5 V6 V7 V8 V9     class
@@ -34,6 +24,7 @@ $ V8   : int  1 2 1 7 1 7 1 1 1 1 ...
 $ V9   : int  1 1 1 1 1 1 1 1 5 1 ...
 $ class: Factor w/ 2 levels "benign","malignant": 1 1 1 1 1 2 1 1 1 1 ...
 biopsy$ID = NULL
+
 head(biopsy)
 V1 V2 V3 V4 V5 V6 V7 V8 V9     class
 1  5  1  1  1  2  1  3  1  1    benign
@@ -46,6 +37,7 @@ V1 V2 V3 V4 V5 V6 V7 V8 V9     class
 names(biopsy) = c("thick", "u.size", "u.shape", "adhsn", "s.size", "nucl", "chrom", "n.nuc", "mit", "class")
 names(biopsy)
 [1] "thick"   "u.size"  "u.shape" "adhsn"   "s.size"  "nucl"    "chrom"   "n.nuc"   "mit"     "class"  
+
 head(biopsy)
 thick u.size u.shape adhsn s.size nucl chrom n.nuc mit     class
 1     5      1       1     1      2    1     3     1   1    benign
@@ -67,7 +59,6 @@ thick u.size u.shape adhsn s.size nucl chrom n.nuc mit     class
 
 dim(biopsy)
 [1] 699  10
-
 
 install.packages("reshape2")
 library(reshape2)

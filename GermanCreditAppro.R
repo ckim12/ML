@@ -50,4 +50,4 @@ german_radial_tune$best.parameters
    cost gamma
 9   10  0.05
 
-# The project in process
+# The project in progress

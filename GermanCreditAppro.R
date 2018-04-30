@@ -43,5 +43,5 @@ german_radial_tune <- tune(svm,risk ~ ., data = german_train,
 
 german_radial_tune$best.parameters
 
-start in book page 184
+
 

@@ -1,15 +1,15 @@
+# In this project using data set that come with R package, and dataset name: "Biopsy"
 install.packages("MASS")
 library(MASS)
 
 data("biopsy")
-head(biopsy)
-ID V1 V2 V3 V4 V5 V6 V7 V8 V9     class
-1 1000025  5  1  1  1  2  1  3  1  1    benign
-2 1002945  5  4  4  5  7 10  3  2  1    benign
-3 1015425  3  1  1  1  2  2  3  1  1    benign
-4 1016277  6  8  8  1  3  4  3  7  1    benign
-5 1017023  4  1  1  3  2  1  3  1  1    benign
-6 1017122  8 10 10  8  7 10  9  7  1 malignant
+head(biopsy, n=3)
+ID V1 V2 V3 V4 V5 V6 V7 V8 V9  class
+1 1000025  5  1  1  1  2  1  3  1  1 benign
+2 1002945  5  4  4  5  7 10  3  2  1 benign
+3 1015425  3  1  1  1  2  2  3  1  1 benign
+
+# Checking features 
 str(biopsy)
 'data.frame':	699 obs. of  11 variables:
   $ ID   : chr  "1000025" "1002945" "1015425" "1016277" ...
@@ -23,9 +23,11 @@ $ V7   : int  3 3 3 3 3 9 3 3 1 2 ...
 $ V8   : int  1 2 1 7 1 7 1 1 1 1 ...
 $ V9   : int  1 1 1 1 1 1 1 1 5 1 ...
 $ class: Factor w/ 2 levels "benign","malignant": 1 1 1 1 1 2 1 1 1 1 ...
+
+# Get rid of ID column
 biopsy$ID = NULL
 
-head(biopsy)
+head(biopsy, n=5)
 V1 V2 V3 V4 V5 V6 V7 V8 V9     class
 1  5  1  1  1  2  1  3  1  1    benign
 2  5  4  4  5  7 10  3  2  1    benign
@@ -34,7 +36,9 @@ V1 V2 V3 V4 V5 V6 V7 V8 V9     class
 5  4  1  1  3  2  1  3  1  1    benign
 6  8 10 10  8  7 10  9  7  1 malignant
 
+# Add column name to the dataset
 names(biopsy) = c("thick", "u.size", "u.shape", "adhsn", "s.size", "nucl", "chrom", "n.nuc", "mit", "class")
+
 names(biopsy)
 [1] "thick"   "u.size"  "u.shape" "adhsn"   "s.size"  "nucl"    "chrom"   "n.nuc"   "mit"     "class"  
 
@@ -83,10 +87,11 @@ dim(test)
 table(train$class)
 benign malignant 
 302       172 
-table(test$class)
 
+table(test$class)
 benign malignant 
 142        67 
+
 full.fit = glm(class ~ ., family=binomial, data=train)
 summary(full.fit)
 
@@ -98,7 +103,7 @@ Deviance Residuals:
 -3.3397  -0.1387  -0.0716   0.0321   2.3559  
 
 Coefficients:
-Estimate Std. Error z value Pr(>|z|)    
+            Estimate Std. Error z value Pr(>|z|)    
 (Intercept)  -9.4293     1.2273  -7.683 1.55e-14 ***
 thick         0.5252     0.1601   3.280 0.001039 ** 
 u.size       -0.1045     0.2446  -0.427 0.669165    
@@ -120,6 +125,9 @@ AIC: 98.373
 
 Number of Fisher Scoring iterations: 8
 
+# Modeling above there are only two coefficients with their p-values less than 0.05 which are thickness and nuclei
+
+# For 95 percent confidence interval below
 confint(full.fit)
 Waiting for profiling to be done...
 2.5 %     97.5 %
@@ -133,14 +141,17 @@ nucl          0.17687420  0.6582354
 chrom        -0.13992177  0.7232904
 n.nuc        -0.03813490  0.5110293
 mit          -0.14099177  1.0142786
-Warning message:
-  In read.dcf(file.path(p, "DESCRIPTION"), c("Package", "Version")) :
 
+# Calculate odds ratios in R using function call exp(coef())  
 exp(coef(full.fit))
 (Intercept)        thick       u.size      u.shape        adhsn       s.size         nucl        chrom        n.nuc          mit 
 8.033466e-05 1.690879e+00 9.007478e-01 1.322844e+00 1.361533e+00 1.331940e+00 1.500309e+00 1.314783e+00 1.251551e+00 1.536709e+00 
+# To interprete an odds ratio is the change in the outcome odds resulting from a unit change in the feature.
+# If value is > one, it indicates that as the feature increases, the odds of the outcome increase. 
+# On the other hand, a value less than one would mean that as feature increase, the odds of the outcome decrease.
 
 train$probs = predict(full.fit, type = "response")
+
 train$probs[1:5]
 [1] 0.02052820 0.01087838 0.99992668 0.08987453 0.01379266
 
@@ -148,25 +159,25 @@ contrasts(train$class)
 malignant
 benign            0
 malignant         1
-Warning message:
-  In read.dcf(file.path(p, "DESCRIPTION"), c("Package", "Version")) :
-
+  
 train$predict = rep("benign", 474)
-train$predict[train$probs=0.5]="malignant"
-Error: unexpected '=' in "train$predict[train$probs="
 train$predict[train$probs>0.5]="malignant"
-table(train$predict, train$class)
 
+train$predict[train$probs>0.5]="malignant"
+
+table(train$predict, train$class)
 benign malignant
 benign       294         7
 malignant      8       165
+
 mean(train$predict==train$class)
 [1] 0.9683544
-test$prob = predict(full.fit)
-test$prob = predict(full.fit, mewdata=test, type = "response")
+
 test$prob = predict(full.fit, newdata=test, type = "response")
+
 test$predict = rep("benign", 209)
 test$predict[test$prob>0.5]="malignant"
+
 table(test$predict, test$class)
 benign malignant
 benign       139         2
@@ -176,10 +187,6 @@ mean(test$predict==test$class)
 [1] 0.9760766
 
 library(bestglm)
-Loading required package: leaps
-Warning messages:
-1: package 'bestglm' was built under R version 3.2.5 
-2: package 'leaps' was built under R version 3.2.5 
 
 train$y=rep(0,474)
 train$y[train$class=="malignant"]=1
@@ -212,16 +219,21 @@ Morgan-Tatar search since family is non-gaussian.
 CV(K = 10, REP = 1)
 BICq equivalent for q in (7.16797006619085e-05, 0.273173435514231)
 Best Model:
-Estimate Std. Error   z value     Pr(>|z|)
+  Estimate Std. Error   z value     Pr(>|z|)
 (Intercept) -7.8147191 0.90996494 -8.587934 8.854687e-18
 thick        0.6188466 0.14713075  4.206100 2.598159e-05
 u.size       0.6582015 0.15295415  4.303260 1.683031e-05
 nucl         0.5725902 0.09922549  5.770596 7.899178e-09
 
-reduce.fit = glm(class~thick+u.size+nucl, family = binomial, data=trian)
-
 reduce.fit = glm(class~thick+u.size+nucl, family = binomial, data=train)
+
 train$cv.probs = predict(reduce.fit, type="response")
 train$cv.predict = rep("benign", 474)
 train$cv.predict[train$cv.probs>0.5]="malignant"
+
 table(train$cv.predict, train$class)
+            benign malignant
+benign       294         9
+malignant      8       163
+
+# This project in progress

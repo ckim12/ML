@@ -8,7 +8,6 @@ names(german) <- c("checking", "duration", "creditHistory","purpose", "credit", 
 # Since it have a lot of categorical features, we will use dummyVars() fn to create dummy binary for these. For risk variable we convert
 # as factor with 0 for good credit and 1 for bad credit.
 
-# Caret library has dummyVars in it
 library(caret)
 dummies <- dummyVars(risk ~ ., data = german)                   
 head(dummies, n=3)
@@ -50,4 +49,19 @@ german_radial_tune$best.parameters
    cost gamma
 9   10  0.05
 
-# The project in progress
+german_radial_tune$best.performance
+[1] 0.2675
+# which mean the best model cost=10 and gamma=0.05 and have 74 percent trainig accuracy.
+
+# Now let testing the portion of test data set 
+german_model <- german_radial_tune$best.model
+test_predict <- predict(german_model, german_test[,1:61])
+mean(test_predict == german_test[,62])
+[1] 0.735
+
+table(predicted = test_predict, actual = german_test[,62])
+          actual
+predicted   0   1
+         0 134  47
+         1   6  13
+# There are 73.5 percent for test accuracy which is very close to training 

@@ -1,10 +1,9 @@
 
+set.seed(1234)
 train <- read.csv('C:/Users/ckim25/Documents/Titanic/train.csv', stringsAsFactors=FALSE)
 test <- read.csv('C:/Users/ckim25/Documents/Titanic/test.csv', stringsAsFactors=FALSE)
 
 library(caret)
-set.seed(1234)
-
 library(randomForest)
 
 extractFeatures <- function(data) {
